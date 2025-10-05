@@ -1,0 +1,19 @@
+clone:
+  - name: git
+    image: registry.gitflic.ru/project/formatc/woodpecker-git/plugin:2.6.0
+    when:
+      - event: [push, tag, pull_request]
+        branch: work
+steps:
+  - name: build
+    image: gcc
+    when:
+      - event: [push, tag, pull_request]
+        branch: work
+    gitea_token:
+      from_secret: token
+    commands:
+      - apt update
+      - apt install -y qtbase5-dev qtbase5-dev-tools qt5-qmake build-essential
+      - qmake ImageFilter.pro
+      - make
